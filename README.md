@@ -9,7 +9,7 @@
   https://arzorxblog.home.blog/2019/08/11/how-to-manual-patch-the-game-with-the-recent-translations/<br>
   （没错，我写这个小工具的初衷就是用来机翻MGQ的，只是随便借此机会练习使用GitHub）<br>
 
-2.下载软件：AiNiee-chatgpt<br>  
+2.下载软件：AiNiee-chatgpt
   https://github.com/NEKOparapa/AiNiee-chatgpt<br>
 
 3.用RPG-Maker VXAce Translator version 0.10c 提取所有的Scripts之后，再用此工具导出几乎所有的字符串为ManualTransFile.json文件，然后使用AiNiee-chatgpt来进行翻译，再用此工具把翻译好了的ManualTransFile.json里的字符串注入到原来的文本里面，之后会在软件的根目录里面生成一个Scrpts的文件夹，再把此文件夹里面的东西全部覆盖原来的Scripts就可以了<br>
