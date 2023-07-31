@@ -8,7 +8,7 @@ namespace RpgMakerTransTextTool.FileOperations
         private readonly bool _isUnderScriptsFolder;
         //存储TXT下的字符串为一个长字符串
         private readonly string _txtString;
-        //存储TXT下的已提取字符串extractedStrings(extractedString, filePath))
+        //存储TXT下的已提取字符串extractedStrings(extractedString, filePath)
         private readonly List<string> _extractedStrings = new();
 
         public string AbsoluteFilePath => _absoluteFilePath;
