@@ -5,7 +5,7 @@ namespace RpgMakerTransTextTool.TextOperations
 {
     public class StringInjector
     {
-        private readonly string _absoluteFolderPath;
+        private string _absoluteFolderPath;
         private readonly static string _rootFolderPath = AppDomain.CurrentDomain.BaseDirectory;
         private readonly static string _dictionaryDataBinFilePath = Path.Combine(_rootFolderPath, "Data", "DictionaryData.bin");
         private readonly static string _manualTransFileJsonFilePath = Path.Combine(_rootFolderPath, "Data", "ManualTransFile.json");
@@ -18,10 +18,10 @@ namespace RpgMakerTransTextTool.TextOperations
 
 
 
-        public StringInjector(string absoluteFolderPath)
+        public StringInjector()
         {
-            _absoluteFolderPath = absoluteFolderPath;
-            Directory.CreateDirectory(Path.Combine(_rootFolderPath, "Scripts"));
+            // _absoluteFolderPath = absoluteFolderPath;
+            Directory.CreateDirectory(_scriptsFolderPath);
             Directory.CreateDirectory(Path.Combine(_scriptsFolderPath, "CommonEvents"));
             Directory.CreateDirectory(Path.Combine(_scriptsFolderPath, "Maps"));
             Directory.CreateDirectory(Path.Combine(_scriptsFolderPath, "Scripts"));
@@ -36,6 +36,8 @@ namespace RpgMakerTransTextTool.TextOperations
                 using (FileStream fileStream = new(_dictionaryDataBinFilePath, FileMode.Open))
                 {
                     using BinaryReader binaryReader = new(fileStream);
+                    // 读取字典的Scripts文件夹的根目录
+                    _absoluteFolderPath = binaryReader.ReadString();
                     // 读取字典的键值对数量
                     int count = binaryReader.ReadInt32();
                     // 循环读取每个键值对
@@ -67,7 +69,7 @@ namespace RpgMakerTransTextTool.TextOperations
         {
             string jsonContent = File.ReadAllText(_manualTransFileJsonFilePath);
             // 匹配字符串的正则表达式
-            string pattern = @"^\s*""([^""]*)""\s*:\s*""([^""]+)""";
+            string pattern = @"^\s*""((?:\\.|[^""])*)""\s*:\s*""((?:\\.|[^""])*)""";
             MatchCollection matches = Regex.Matches(jsonContent, pattern, RegexOptions.Multiline);
 
             foreach (Match match in matches.Cast<Match>())
@@ -103,27 +105,13 @@ namespace RpgMakerTransTextTool.TextOperations
                                 txtFileCache[absoluteFilePath] = fileContent;
                             }
                             //使用正则表达式替换所有未翻译的字符串为翻译后的字符串
-                            string pattern = @"(?<="")" + Regex.Escape(untranslatedString) + @"(?=(""|\\""))";
+                            string escapedUntranslatedString = Regex.Escape(untranslatedString);
+                            //string escapedTranslatedString = Regex.Escape(translatedString);
+                            string pattern = escapedUntranslatedString;
                             fileContent = Regex.Replace(fileContent, pattern, translatedString);
                             //将修改后的内容放回缓存中
                             txtFileCache[absoluteFilePath] = fileContent;
                         }
-
-                        //Parallel.ForEach(extractedStringLocations, extractedStringLocation =>
-                        //{
-                        //    string absoluteFilePath = extractedStringLocation;
-                        //    //先判断文件内容是否已经在缓存中，如果不在则读取并缓存
-                        //    if (!txtFileCache.TryGetValue(absoluteFilePath, out string? fileContent))
-                        //    {
-                        //        fileContent = File.ReadAllText(absoluteFilePath);
-                        //        txtFileCache[absoluteFilePath] = fileContent;
-                        //    }
-                        //    //使用正则表达式替换所有未翻译的字符串为翻译后的字符串
-                        //    string pattern = @"(?<="")" + Regex.Escape(untranslatedString) + @"(?=(""|\\""))";
-                        //    fileContent = Regex.Replace(fileContent, pattern, translatedString);
-                        //    //将修改后的内容放回缓存中
-                        //    txtFileCache[absoluteFilePath] = fileContent;
-                        //});
                     }
                 }
                 //Console.WriteLine($"正在替换第{i + 1}/{_manualTransFileJsonUntranslatedStrings.Count}个字符串");
@@ -133,10 +121,13 @@ namespace RpgMakerTransTextTool.TextOperations
             {
                 string absoluteFilePath = kvp.Key;
                 string relativeFilePath = Path.GetRelativePath(_absoluteFolderPath, absoluteFilePath);
+                //bool isUnderScriptsFolder = relativeFilePath.StartsWith("Scripts");
                 string filePath = Path.Combine(_scriptsFolderPath, relativeFilePath);
                 string fileContent = kvp.Value;
-                // 以UTF-8带BOM格式写入文件
-                File.WriteAllText(filePath, fileContent, new UTF8Encoding(true));
+                // 决定使用哪种编码
+                //var fileEncoding = isUnderScriptsFolder ? Encoding.UTF8 : Encoding.UTF8;
+                //File.WriteAllText(filePath, fileContent, fileEncoding);
+                File.WriteAllText(filePath, fileContent);
             }
         }
     }

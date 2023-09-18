@@ -58,13 +58,15 @@ namespace RpgMakerTransTextTool.FileOperations
             Console.WriteLine("\n提取的ManualTransFile.json结果已保存到文件中。");
         }
         // 将字典输出为二进制文件
-        public void SaveDictionaryToBinaryFile()
+        public void SaveDictionaryToBinaryFile(string folderPath)
         {
-            string outputFilePath = Path.Combine(_rootFolderPath, "Data", "DictionaryData.bin");
+            string outPutFilePath = Path.Combine(_rootFolderPath, "Data", "DictionaryData.bin");
             try
             {
-                using (BinaryWriter binaryWriter = new(File.Open(outputFilePath, FileMode.Create)))
+                using (BinaryWriter binaryWriter = new(File.Open(outPutFilePath, FileMode.Create)))
                 {
+                    //写入Scripts文件夹的根目录
+                    binaryWriter.Write(folderPath);
                     //写入字典的键值对数量
                     binaryWriter.Write(_allExtractedStringsDictionary.Count);
                     foreach (var kvp in _allExtractedStringsDictionary)

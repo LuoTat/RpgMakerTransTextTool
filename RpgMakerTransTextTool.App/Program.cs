@@ -11,35 +11,34 @@ namespace RpgMakerTransTextTool
 
         static void Main(string[] args)
         {
-            Console.WriteLine("欢迎使用RPGVXACE字符串处理工具！");
-            Stopwatch stopwatch = new();
+            Console.WriteLine("欢迎使用RPGVXACE字符串处理工具！\n");
+            Stopwatch stopWatch = new();
             TimeSpan elapsedTime;
-            //根文件目录
-            Console.WriteLine("请输入Scripts文件夹的根目录");
-            string folderPath;
             while (true)
             {
-                folderPath = Console.ReadLine()!;
-                if (string.IsNullOrEmpty(folderPath)) { Console.WriteLine("输入不能为空，请重新输入。\n"); }
-                else if (!System.IO.Directory.Exists(folderPath)) { Console.WriteLine("输入的文件夹地址无效，请重新输入。\n"); }
-                else { break; }
-            }
-            while (true)
-            {
-                Console.WriteLine("\n请选择要执行的操作：");
+                Console.WriteLine("请选择要执行的操作：");
                 Console.WriteLine("1. 读取文件夹并提取字符串");
                 Console.WriteLine("2. 写入提取的字符串");
                 Console.WriteLine("0. 退出程序");
-                string input = Console.ReadLine();
+                string? input = Console.ReadLine();
                 if (input == "1")
                 {
+                    //根文件目录
+                    Console.WriteLine("请输入Scripts文件夹的根目录");
+                    string folderPath;
+                    while (true)
+                    {
+                        folderPath = Console.ReadLine()!;
+                        if (string.IsNullOrEmpty(folderPath)) { Console.WriteLine("输入不能为空，请重新输入。\n"); }
+                        else if (!System.IO.Directory.Exists(folderPath)) { Console.WriteLine("输入的文件夹地址无效，请重新输入。\n"); }
+                        else { break; }
+                    }
                     //询问是否需要提取Scripts文件夹下的TXT文件
                     Console.WriteLine("\n是否想要提取Scripts文件夹下的TXT文件？(Y/N)");
-                    string userInput;
                     bool processScripts;
                     while (true)
                     {
-                        userInput = Console.ReadLine()!;
+                        string userInput = Console.ReadLine()!;
                         if (userInput.Trim().ToUpper() == "Y") { processScripts = true; break; }
                         else if (userInput.Trim().ToUpper() == "N") { processScripts = false; break; }
                         else { Console.WriteLine("请输入Y/N"); }
@@ -48,27 +47,27 @@ namespace RpgMakerTransTextTool
                     ConcurrentBag<TextFile> textFileList = new();
                     //实现所有的TextFile实例并且保存到textFiles里
                     TextFileReader textFileReader = new(folderPath);
-                    stopwatch.Start();
+                    stopWatch.Start();
                     //#################################################################################
                     textFileReader.ReadTextFilesInDirectory(folderPath, textFileList, processScripts);
                     //#################################################################################
-                    stopwatch.Stop();
-                    elapsedTime = stopwatch.Elapsed;
+                    stopWatch.Stop();
+                    elapsedTime = stopWatch.Elapsed;
                     Console.WriteLine("\nTXT读取并提取结束");
                     Console.WriteLine($"读取TXT共用时：{elapsedTime}");
-                    stopwatch.Restart();
+                    stopWatch.Restart();
                     //#################################################
                     TextFileWriter textFileWriter = new(textFileList);
                     //输出DictionaryData.bin文件
-                    textFileWriter.SaveDictionaryToBinaryFile();
+                    textFileWriter.SaveDictionaryToBinaryFile(folderPath);
                     //#################################################
-                    stopwatch.Stop();
-                    elapsedTime = stopwatch.Elapsed;
+                    stopWatch.Stop();
+                    elapsedTime = stopWatch.Elapsed;
                     Console.WriteLine($"生成字典与JSON文件共用时：{elapsedTime}");
                     if (File.Exists(Path.Combine(_rootFolderPath, "Data", "ManualTransFile.json")))
                     {
                         Console.WriteLine("\nManualTransFile.json文件已存在，是否要覆盖？ (Y/N)");
-                        string answer = Console.ReadLine();
+                        string? answer = Console.ReadLine();
                         if (answer != null && (answer.ToUpper() == "Y" || answer.ToUpper() == "YES"))
                         {
                             //覆盖ManualTransFile.json文件
@@ -85,15 +84,15 @@ namespace RpgMakerTransTextTool
                 {
                     if (File.Exists(Path.Combine(_rootFolderPath, "Data", "DictionaryData.bin")) && File.Exists(Path.Combine(_rootFolderPath, "Data", "ManualTransFile.json")))
                     {
-                        StringInjector stringInjector = new(folderPath);
-                        stopwatch.Restart();
+                        StringInjector stringInjector = new();
+                        stopWatch.Restart();
                         //#####################################
                         stringInjector.ReplaceStringsInFiles();
                         //#####################################
-                        stopwatch.Stop();
-                        elapsedTime = stopwatch.Elapsed;
+                        stopWatch.Stop();
+                        elapsedTime = stopWatch.Elapsed;
                         Console.WriteLine("字符串替换结束");
-                        Console.WriteLine($"字符串替换共用时：{elapsedTime}");//字符串替换共用时：00:00:17.9294841
+                        Console.WriteLine($"字符串替换共用时：{elapsedTime}");
                     }
                     else
                     {
@@ -112,5 +111,6 @@ namespace RpgMakerTransTextTool
                 }
             }
         }
+
     }
 }

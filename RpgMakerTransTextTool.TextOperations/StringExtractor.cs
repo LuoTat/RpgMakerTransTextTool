@@ -52,7 +52,7 @@ namespace RpgMakerTransTextTool.TextOperations
             @"^\s*(?::dead_word|:orgasm_word|:predation_word|:incontinence_word)[^""\n]+""((?:\\.|[^""])+)",                                                                    //DownWords(Actor).txt
             @"^\s*(?::dead_word|:orgasm_word|:predation_word|:incontinence_word)[^""\n]+""((?:\\.|[^""])+)",                                                                    //DownWords(Enemy).txt
             @"^\s*:(?:question|yes|no)[^""\n]+""((?:\\.|[^""])+)",                                                                                                              //Follower.txt
-            @"(?:^\s*PLACE\b[^""]*(?:""((?:\\.|[^""])+)?""[^""\]]*)+|^\s*{:name\s=>\s""((?:\\.|[^""])+))",                                                                      //IDReserve.txt 1 2???
+            @"(?:^\s*PLACE\b[^""]*(?:""((?:\\.|[^""])+)?""[^""\]]*)+|^\s*{:name\s=>\s""((?:\\.|[^""])+))",                                                                      //IDReserve.txt
             @"^\s*""((?:\\.|[^""])+)",                                                                                                                                          //JobChange.txt
             @"^\s*ACTOR_FIX_ABILITY[^""]*(?:""((?:\\.|[^""])+)?""[^""\}]*)+",                                                                                                   //Library(Actor).txt
             @"^\s*(?:ENCOUNTER_ENEMY_PLACE|ENEMY_DESCRIPTION)[^""]*(?:""((?:\\.|[^""])+)?""[^""\}]*)+",                                                                         //Library(Enemy).txt
