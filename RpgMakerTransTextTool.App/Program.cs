@@ -1,4 +1,4 @@
-﻿using RpgMakerTransTextTool.FileOperations;
+using RpgMakerTransTextTool.FileOperations;
 using RpgMakerTransTextTool.TextOperations;
 using System.Collections.Concurrent;
 using System.Diagnostics;
