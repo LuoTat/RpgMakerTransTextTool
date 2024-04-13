@@ -1,4 +1,4 @@
-using RpgMakerTransTextTool.TextOperations;
+﻿using RpgMakerTransTextTool.TextOperations;
 
 namespace RpgMakerTransTextTool.FileOperations;
 
