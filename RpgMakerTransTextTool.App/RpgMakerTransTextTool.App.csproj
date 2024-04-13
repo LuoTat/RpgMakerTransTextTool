@@ -8,8 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\RpgMakerTransTextTool.FileOperations\RpgMakerTransTextTool.FileOperations.csproj" />
-      <ProjectReference Include="..\RpgMakerTransTextTool.TextOperations\RpgMakerTransTextTool.TextOperations.csproj" />
+        <ProjectReference Include="..\RpgMakerTransTextTool.FileOperations\RpgMakerTransTextTool.FileOperations.csproj"/>
+        <ProjectReference Include="..\RpgMakerTransTextTool.TextOperations\RpgMakerTransTextTool.TextOperations.csproj"/>
     </ItemGroup>
 
 </Project>

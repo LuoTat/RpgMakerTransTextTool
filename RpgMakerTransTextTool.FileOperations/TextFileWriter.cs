@@ -1,92 +1,76 @@
 ﻿using System.Collections.Concurrent;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace RpgMakerTransTextTool.FileOperations
+namespace RpgMakerTransTextTool.FileOperations;
+
+public class TextFileWriter
 {
-    public class TextFileWriter
+    // 记录当前程序的根目录
+    private static readonly string AppRootFolderPath = AppDomain.CurrentDomain.BaseDirectory;
+
+    // 用Dictionary存储所有提取的字符串及其位置信息
+    // 字典的键为提取的字符串，值为包含该字符串的文件的绝对路径列表
+    private readonly Dictionary<string, List<string>> _allExtractedStringsDictionary = new(StringComparer.Ordinal);
+
+
+    // 实现把所有TextFile存储为字典
+    public TextFileWriter(ConcurrentBag<TextFile> textFileList)
     {
-        private Dictionary<string, List<string>> _allExtractedStringsDictionary = new(StringComparer.Ordinal);
-        private static readonly string _rootFolderPath = AppDomain.CurrentDomain.BaseDirectory;
+        // 创建Data文件夹
+        Directory.CreateDirectory(Path.Combine(AppRootFolderPath, "Data"));
 
-
-        //实现把所有TXT的已提取字符串元组存储为字典
-        public TextFileWriter(ConcurrentBag<TextFile> textFileList)
+        // 遍历当前textFileList中提取的字符串信息
+        foreach (TextFile textFile in textFileList)
         {
-            Directory.CreateDirectory(Path.Combine(_rootFolderPath, "Data"));
-            //遍历当前文件中提取的字符串信息
-            foreach (var textFile in textFileList)
+            // 获取当前文件的绝对路径
+            string absoluteFilePath = textFile.AbsoluteTextFilePath;
+
+            // 遍历当前文件中提取的字符串信息
+            foreach (string extractedString in textFile.ExtractedStrings)
             {
-                //获取当前文件的绝对路径
-                string absoluteFilePath = textFile.AbsoluteFilePath;
-                //遍历当前文件中提取的字符串信息
-                foreach (var extractedStringInfo in textFile.ExtractedStrings)
-                {
-                    string extractedString = extractedStringInfo;
-                    //如果字典中已经包含该字符串，则将当前文件的位置信息添加到对应的列表中
-                    if (_allExtractedStringsDictionary.TryGetValue(extractedString, out var extractedStringLocations))
-                    {
-                        extractedStringLocations.Add(absoluteFilePath);
-                    }
-                    else //否则，在字典中新增该字符串及其位置信息列表
-                    {
-                        _allExtractedStringsDictionary.Add(extractedString, new List<string> { absoluteFilePath });
-                    }
-                }
+                // 如果字典中已经包含该字符串，则将当前文件的位置信息添加到对应的列表中
+                if (_allExtractedStringsDictionary.TryGetValue(extractedString, out List<string>? extractedStringsLocationsList)) extractedStringsLocationsList.Add(absoluteFilePath);
+                else _allExtractedStringsDictionary.Add(extractedString, [absoluteFilePath]); // 否则，在字典中新增该字符串及其位置信息列表
             }
         }
-        //输出ManualTransFile.json文件
-        public void OutPutManualTransFileJson()
+    }
+
+    // 输出ManualTransFile.json文件
+    public void OutPutManualTransFileJson()
+    {
+        // 创建一个新的 JObject
+        JObject jObject = new();
+
+        // 遍历 _allExtractedStringsDictionary 的键，将每个键作为属性和值添加到 JObject 中
+        foreach (string key in _allExtractedStringsDictionary.Keys)
         {
-            //使用StringBuilder来拼接ManualTransFile.json字符串
-            var jsonStringBuilder = new System.Text.StringBuilder();
-            jsonStringBuilder.AppendLine("{");
-            foreach (var extractedString in _allExtractedStringsDictionary.Keys)
-            {
-                jsonStringBuilder.AppendLine($"    \"{extractedString}\": \"{extractedString}\",");
-            }
-            //移除最后一个多余的逗号
-            if (_allExtractedStringsDictionary.Count > 0)
-            {
-                jsonStringBuilder.Remove(jsonStringBuilder.Length - 3, 1);
-            }
-            jsonStringBuilder.AppendLine("}");
-            //将JSON字符串写入文件
-            string outputFilePath = Path.Combine(_rootFolderPath, "Data", "ManualTransFile.json");
-            using (StreamWriter writer = new(outputFilePath))
-            {
-                writer.Write(jsonStringBuilder.ToString());
-            }
-            Console.WriteLine("\n提取的ManualTransFile.json结果已保存到文件中。");
+            jObject.Add(key, JToken.FromObject(key));
         }
-        // 将字典输出为二进制文件
-        public void SaveDictionaryToBinaryFile(string folderPath)
+
+        // 将 JObject 对象转换为 JSON 字符串
+        string json = jObject.ToString(Formatting.Indented);
+
+        // 将 JSON 字符串写入文件
+        string outputFilePath = Path.Combine(AppRootFolderPath, "Data", "ManualTransFile.json");
+        File.WriteAllText(outputFilePath, json);
+    }
+
+    // 将字典输出为JSON文件
+    public void SaveDictionaryToBinaryFile()
+    {
+        string outPutFilePath = Path.Combine(AppRootFolderPath, "Data", "DictionaryData.bin");
+
+        try
         {
-            string outPutFilePath = Path.Combine(_rootFolderPath, "Data", "DictionaryData.bin");
-            try
-            {
-                using (BinaryWriter binaryWriter = new(File.Open(outPutFilePath, FileMode.Create)))
-                {
-                    //写入Scripts文件夹的根目录
-                    binaryWriter.Write(folderPath);
-                    //写入字典的键值对数量
-                    binaryWriter.Write(_allExtractedStringsDictionary.Count);
-                    foreach (var kvp in _allExtractedStringsDictionary)
-                    {
-                        //写入键的内容
-                        binaryWriter.Write(kvp.Key);
-                        //写入每个键对应的值的数量和信息
-                        binaryWriter.Write(kvp.Value.Count);
-                        foreach (var location in kvp.Value)
-                        {
-                            binaryWriter.Write(location);//字符串所在文件的绝对路径
-                        }
-                    }
-                }
-                Console.WriteLine("提取的DictionaryData.bin结果已保存到文件中。");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("保存字典到二进制文件时出现异常：" + ex.Message);
-            }
+            string json = JsonConvert.SerializeObject(_allExtractedStringsDictionary, Formatting.Indented);
+            File.WriteAllText(outPutFilePath, json);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("保存字典到DictionaryData.bin时出现异常");
+            Console.WriteLine(ex.ToString());
+            Environment.Exit(1);
         }
     }
 }
