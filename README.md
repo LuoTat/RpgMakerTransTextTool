@@ -1,4 +1,5 @@
 # RpgMakerTransTextTool
+
 一款基于RPG-Maker VXAce Translator 和 AiNiee-chatgpt 的RPG游戏文本翻译工具<br>
 
 使用方法：<br>

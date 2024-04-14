@@ -21,13 +21,13 @@ internal abstract class Program
             Console.WriteLine("2. 写入提取的字符串");
             Console.WriteLine("0. 退出程序");
 
-            string? input             = Console.ReadLine();
-            string? scriptsFolderPath = null; // 记录Scripts文件夹的根目录
+            string? input = Console.ReadLine();
 
             if (input == "1")
             {
                 // 根文件目录
                 Console.WriteLine("请输入Scripts文件夹的根目录");
+                string? scriptsFolderPath; // 记录Scripts文件夹的根目录
                 while (true)
                 {
                     scriptsFolderPath = Console.ReadLine();

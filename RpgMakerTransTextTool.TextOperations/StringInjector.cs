@@ -101,6 +101,9 @@ public class StringInjector
             // 如果已翻译字符串为空，则跳过
             if (string.IsNullOrEmpty(translatedString)) continue;
 
+            // 如果未翻译字符串与已翻译字符串相同，则跳过
+            if (untranslatedString.Equals(translatedString)) continue;
+
             // 如果未翻译字符串不在字典中，则跳过
             if (!_allExtractedStringsDictionary.TryGetValue(untranslatedString, out List<string>? extractedStringLocations)) continue;
 
@@ -121,19 +124,17 @@ public class StringInjector
                 txtFileCache[extractedStringLocation] = fileContent;
             }
 
-            //Console.WriteLine($"正在替换第{i + 1}/{_manualTransFileJsonUntranslatedStrings.Count}个字符串");
+            Console.WriteLine($"正在替换第{i + 1}/{_manualTransFileJsonUntranslatedStrings.Count}个字符串");
         }
 
         // 一次性将所有文件内容输出到根目录下的Scripts文件夹
-        foreach (KeyValuePair<string, string> kvp in txtFileCache)
+        foreach ((string? absoluteFilePath, string? fileContent) in txtFileCache)
         {
             // 获取绝对路径和相对路径
-            string absoluteFilePath = kvp.Key;
             string relativeFilePath = Path.GetRelativePath(_scriptsFolderPath, absoluteFilePath);
 
             // 获得根目录下的Scripts文件夹的绝对路径
-            string filePath    = Path.Combine(OutPutScriptsFolderPath, relativeFilePath);
-            string fileContent = kvp.Value;
+            string filePath = Path.Combine(OutPutScriptsFolderPath, relativeFilePath);
 
             // 输出文件
             // 确保目录存在，如果不存在则创建

@@ -9,13 +9,7 @@ public class TextFile
     public TextFile(string absoluteTextFilePath, string txtString)
     {
         AbsoluteTextFilePath = absoluteTextFilePath;
-
-        // // 单独提取Scripts文件夹下的TXT文件
-        // if (relativeTextFilePath.StartsWith("Scripts")) StringExtractor.ExtractScriptsStrings(ExtractedStrings, txtString, absoluteTextFilePath);
-        //
-        // // 其他的TXT文件
-        // else StringExtractor.ExtractOtherStrings(ExtractedStrings, txtString, relativeTextFilePath);
-        StringExtractor.ExtractOtherStrings(ExtractedStrings, txtString);
+        StringExtractor.ExtractStrings(ExtractedStrings, txtString);
     }
 
     // 记录TXT文件的绝对路径
