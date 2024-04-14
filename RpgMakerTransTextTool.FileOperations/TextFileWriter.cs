@@ -9,16 +9,21 @@ public class TextFileWriter
     // 记录当前程序的根目录
     private static readonly string AppRootFolderPath = AppDomain.CurrentDomain.BaseDirectory;
 
+    // 记录Script文件夹的根目录
+    private readonly string _scriptsFolderPath;
+
     // 用Dictionary存储所有提取的字符串及其位置信息
     // 字典的键为提取的字符串，值为包含该字符串的文件的绝对路径列表
     private readonly Dictionary<string, List<string>> _allExtractedStringsDictionary = new(StringComparer.Ordinal);
 
 
     // 实现把所有TextFile存储为字典
-    public TextFileWriter(ConcurrentBag<TextFile> textFileList)
+    public TextFileWriter(ConcurrentBag<TextFile> textFileList, string scriptsFolderPath)
+
     {
         // 创建Data文件夹
         Directory.CreateDirectory(Path.Combine(AppRootFolderPath, "Data"));
+        _scriptsFolderPath = scriptsFolderPath;
 
         // 遍历当前textFileList中提取的字符串信息
         foreach (TextFile textFile in textFileList)
@@ -63,7 +68,19 @@ public class TextFileWriter
 
         try
         {
-            string json = JsonConvert.SerializeObject(_allExtractedStringsDictionary, Formatting.Indented);
+            // 创建一个新的 JObject
+            JObject jsonObject = new()
+            {
+                // 将 _scriptsFolderPath 的值添加到 JObject 中
+                { "_scriptsFolderPath", JToken.FromObject(_scriptsFolderPath) },
+                // 将 _allExtractedStringsDictionary 添加到 JObject 中
+                { "_allExtractedStringsDictionary", JToken.FromObject(_allExtractedStringsDictionary) }
+            };
+
+            // 将 JObject 对象转换为 JSON 字符串
+            string json = jsonObject.ToString(Formatting.Indented);
+
+            // 将 JSON 字符串写入文件
             File.WriteAllText(outPutFilePath, json);
         }
         catch (Exception ex)

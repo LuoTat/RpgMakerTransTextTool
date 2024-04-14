@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace RpgMakerTransTextTool.TextOperations;
@@ -30,20 +29,27 @@ public class StringInjector
     // 记录ManualTransFile.json中的未翻译字符串
     private readonly List<string> _manualTransFileJsonUntranslatedStrings = [];
 
-    public StringInjector(string scriptsFolderPath)
+    public StringInjector()
     {
-        _scriptsFolderPath             = scriptsFolderPath;
-        _allExtractedStringsDictionary = ReadDictionaryFromBinaryFile();
+        (_scriptsFolderPath, _allExtractedStringsDictionary) = ReadDictionaryFromBinaryFile();
         ExtractStringsFromJson();
     }
 
-    private static Dictionary<string, List<string>> ReadDictionaryFromBinaryFile()
+    private static (string, Dictionary<string, List<string>>) ReadDictionaryFromBinaryFile()
     {
         Dictionary<string, List<string>>? allExtractedStringsDictionary = null;
+        string?                           scriptsFolderPath             = null;
+
         try
         {
-            string json = File.ReadAllText(DictionaryDataBinFilePath);
-            allExtractedStringsDictionary = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(json);
+            string  json       = File.ReadAllText(DictionaryDataBinFilePath);
+            JObject jsonObject = JObject.Parse(json);
+
+            // Extract _scriptsFolderPath from the JSON object
+            scriptsFolderPath = jsonObject["_scriptsFolderPath"]?.ToString();
+
+            // Extract allExtractedStringsDictionary from the JSON object
+            allExtractedStringsDictionary = jsonObject["_allExtractedStringsDictionary"]?.ToObject<Dictionary<string, List<string>>>();
         }
         catch (Exception ex)
         {
@@ -52,10 +58,14 @@ public class StringInjector
             Environment.Exit(1);
         }
 
-        if (allExtractedStringsDictionary != null) return allExtractedStringsDictionary;
+        if (allExtractedStringsDictionary != null && scriptsFolderPath != null)
+        {
+            return (scriptsFolderPath, allExtractedStringsDictionary);
+        }
+
         Console.WriteLine("Error loading dictionary from JSON file");
         Environment.Exit(1);
-        return allExtractedStringsDictionary;
+        return (scriptsFolderPath, allExtractedStringsDictionary);
     }
 
     private void ExtractStringsFromJson()

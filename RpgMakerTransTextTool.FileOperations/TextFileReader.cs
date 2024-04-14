@@ -4,7 +4,7 @@ namespace RpgMakerTransTextTool.FileOperations;
 
 public class TextFileReader(string absoluteFolderPath)
 {
-    private static void ReadTextFile(string absoluteTextFilePath, string relativeTextFilePath, ConcurrentBag<TextFile> textFileList)
+    private static void ReadTextFile(ConcurrentBag<TextFile> textFileList, string absoluteTextFilePath)
     {
         string txtString = string.Empty;
         try
@@ -13,19 +13,19 @@ public class TextFileReader(string absoluteFolderPath)
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error when reading file: {relativeTextFilePath}");
+            Console.WriteLine($"Error when reading file: {absoluteTextFilePath}");
             Console.WriteLine(ex.ToString());
             Environment.Exit(1);
         }
 
         // 实例化一个TextFile并添加到textFileList
-        TextFile textFile = new(absoluteTextFilePath, relativeTextFilePath, txtString);
+        TextFile textFile = new(absoluteTextFilePath, txtString);
         textFileList.Add(textFile);
     }
 
     public void ReadTextFilesInDirectory(ConcurrentBag<TextFile> textFileList, bool processScripts)
     {
-        string[] fileExtensions = { ".txt", ".rb" };
+        string[] fileExtensions = [".txt", ".rb"];
 
         foreach (string extension in fileExtensions)
         {
@@ -39,7 +39,7 @@ public class TextFileReader(string absoluteFolderPath)
 
                 // 特殊处理Scripts文件夹下的TXT文件
                 // 在每个线程中实例化一个TextFile并读取TXT文件
-                if (!isUnderScriptsFolder || processScripts) ReadTextFile(absoluteTextFilePath, relativeTextFilePath, textFileList);
+                if (!isUnderScriptsFolder || processScripts) ReadTextFile(textFileList, absoluteTextFilePath);
             });
         }
     }

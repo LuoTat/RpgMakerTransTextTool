@@ -71,7 +71,7 @@ public static partial class StringExtractor
         @"^[^""\n]*(?:""(?!Iconset)((?:\\.|[^""#])+)?""[^""\n]*)+"                                                                                                         //12%002fdamage_display_refine.txt
     ];
 
-    public static void ExtractOtherStrings(List<string> extractedStrings, string txtString, string relativeFilePath)
+    public static void ExtractOtherStrings(List<string> extractedStrings, string txtString)
     {
         // 正则表达式，用于匹配被双引号包围的字符串
         const string pattern = @"""((?:\\.|[^""])+)?""";

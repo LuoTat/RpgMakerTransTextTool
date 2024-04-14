@@ -22,7 +22,7 @@ internal abstract class Program
             Console.WriteLine("0. 退出程序");
 
             string? input             = Console.ReadLine();
-            string? scriptsFolderPath = string.Empty; // 记录Scripts文件夹的根目录
+            string? scriptsFolderPath = null; // 记录Scripts文件夹的根目录
 
             if (input == "1")
             {
@@ -78,7 +78,7 @@ internal abstract class Program
                 Console.WriteLine($"读取TXT共用时：{stopWatch.Elapsed}");
 
                 // 实例化一个TextFileWriter并将textFileList传入
-                TextFileWriter textFileWriter = new(textFileList);
+                TextFileWriter textFileWriter = new(textFileList, scriptsFolderPath);
 
                 stopWatch.Restart();
                 //#################################################
@@ -113,7 +113,7 @@ internal abstract class Program
                 if (File.Exists(Path.Combine(AppRootFolderPath, "Data", "DictionaryData.bin")) && File.Exists(Path.Combine(AppRootFolderPath, "Data", "ManualTransFile.json")))
                 {
                     // 实例化一个StringInjector
-                    StringInjector stringInjector = new(scriptsFolderPath);
+                    StringInjector stringInjector = new();
 
                     stopWatch.Restart();
                     //#####################################

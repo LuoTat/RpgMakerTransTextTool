@@ -6,7 +6,7 @@ public class TextFile
 {
     //存储TXT下的已提取字符串extractedStrings(extractedString, filePath)
 
-    public TextFile(string absoluteTextFilePath, string relativeTextFilePath, string txtString)
+    public TextFile(string absoluteTextFilePath, string txtString)
     {
         AbsoluteTextFilePath = absoluteTextFilePath;
 
@@ -15,9 +15,7 @@ public class TextFile
         //
         // // 其他的TXT文件
         // else StringExtractor.ExtractOtherStrings(ExtractedStrings, txtString, relativeTextFilePath);
-
-
-        StringExtractor.ExtractOtherStrings(ExtractedStrings, txtString, relativeTextFilePath);
+        StringExtractor.ExtractOtherStrings(ExtractedStrings, txtString);
     }
 
     // 记录TXT文件的绝对路径
