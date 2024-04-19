@@ -1,8 +1,9 @@
 ﻿using System.Text.RegularExpressions;
+using RpgMakerTransTextTool.StringOperations;
 
 namespace RpgMakerTransTextTool.TextOperations;
 
-public static partial class StringExtractor
+public static class StringExtractor
 {
     // private static readonly string[] AllOtherFileCategories =
     // [
@@ -78,12 +79,13 @@ public static partial class StringExtractor
             string extractedString = match.Groups[1].Value;
 
             // 将提取的字符串添加到列表中
-            if (extractedString != string.Empty) extractedStrings.Add(extractedString);
+            // 要先反转义字符串
+            if (extractedString != string.Empty) extractedStrings.Add(StringEscaper.UnescapeString(extractedString));
             //Console.WriteLine($"{relativeFilePath}: {extractedString}"); //打印当前提取的字符串
         }
     }
 
     // 正则表达式，用于匹配被双引号包围的字符串
     [GeneratedRegex(@"""((?:\\.|[^""])+)?""", RegexOptions.Multiline)]
-    private static partial Regex MyRegex();
+    private static  Regex MyRegex();
 }

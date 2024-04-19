@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgMakerTransTextTool.FileO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgMakerTransTextTool.TextOperations", "RpgMakerTransTextTool.TextOperations\RpgMakerTransTextTool.TextOperations.csproj", "{B5728DCD-A752-484E-9ECE-4D5A28DE072A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgMakerTransTextTool.StringOperations", "RpgMakerTransTextTool.StringOperations\RpgMakerTransTextTool.StringOperations.csproj", "{B8355C08-C965-4BC3-BB10-55226B8B7F26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,5 +29,9 @@ Global
 		{B5728DCD-A752-484E-9ECE-4D5A28DE072A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5728DCD-A752-484E-9ECE-4D5A28DE072A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B5728DCD-A752-484E-9ECE-4D5A28DE072A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{B8355C08-C965-4BC3-BB10-55226B8B7F26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8355C08-C965-4BC3-BB10-55226B8B7F26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8355C08-C965-4BC3-BB10-55226B8B7F26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8355C08-C965-4BC3-BB10-55226B8B7F26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

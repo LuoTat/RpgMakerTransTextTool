@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\RpgMakerTransTextTool.StringOperations\RpgMakerTransTextTool.StringOperations.csproj" />
         <ProjectReference Include="..\RpgMakerTransTextTool.TextOperations\RpgMakerTransTextTool.TextOperations.csproj"/>
     </ItemGroup>
 
