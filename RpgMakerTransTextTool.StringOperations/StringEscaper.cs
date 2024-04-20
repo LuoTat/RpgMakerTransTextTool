@@ -55,6 +55,8 @@ public static class StringEscaper
                     case '\"':
                         sb.Append('\"');
                         break;
+                    default:
+                        throw new ArgumentException($"Invalid escape character: \\{c}");
                 }
                 escapeMode = false;
             }

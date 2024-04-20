@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using RpgMakerTransTextTool.StringOperations;
 
 namespace RpgMakerTransTextTool.TextOperations;
 
@@ -118,7 +119,7 @@ public class StringInjector
                 }
 
                 // 使用正则表达式替换所有未翻译的字符串为翻译后的字符串
-                fileContent = Regex.Replace(fileContent, Regex.Escape(untranslatedString), translatedString);
+                fileContent = Regex.Replace(fileContent, Regex.Escape(StringEscaper.EscapeString(untranslatedString)), StringEscaper.EscapeString(translatedString));
 
                 //将修改后的内容放回缓存中
                 txtFileCache[extractedStringLocation] = fileContent;

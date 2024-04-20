@@ -3,7 +3,7 @@ using RpgMakerTransTextTool.StringOperations;
 
 namespace RpgMakerTransTextTool.TextOperations;
 
-public static class StringExtractor
+public static partial class StringExtractor
 {
     // private static readonly string[] AllOtherFileCategories =
     // [
@@ -80,12 +80,24 @@ public static class StringExtractor
 
             // 将提取的字符串添加到列表中
             // 要先反转义字符串
-            if (extractedString != string.Empty) extractedStrings.Add(StringEscaper.UnescapeString(extractedString));
+            string unescapedString = string.Empty;
+            try
+            {
+                 unescapedString = StringEscaper.UnescapeString(extractedString);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"{extractedString}格式有误"); //打印当前提取的字符串
+                Console.WriteLine(ex.Message);
+                Environment.Exit(1);
+            }
+
+            if (extractedString != string.Empty) extractedStrings.Add(unescapedString);
             //Console.WriteLine($"{relativeFilePath}: {extractedString}"); //打印当前提取的字符串
         }
     }
 
     // 正则表达式，用于匹配被双引号包围的字符串
     [GeneratedRegex(@"""((?:\\.|[^""])+)?""", RegexOptions.Multiline)]
-    private static  Regex MyRegex();
+    private static partial Regex MyRegex();
 }
